@@ -25,8 +25,12 @@ class X(DOMWidget):
 
     _value = Unicode('None').tag(sync=True)
 
-    def __init__(self, value=None):
+    def __init__(self, value=None, inputs=[], operation="", **kwargs):
+        self._outputs = []
+        self._inputs = inputs
+        self._operation = operation
         self.v = value
+        super(X, self).__init__(**kwargs)
 
     @property
     def v(self):
@@ -35,3 +39,19 @@ class X(DOMWidget):
     @v.setter
     def v(self, value):
         self._v = value
+        self._value = str(value)
+        for x in self._outputs:
+            x._compute()
+
+    def _compute(self):
+        if self._operation:
+            exec(self._operation)
+
+    def __add__(self, other):
+        x = X(inputs=[self, X(other)], operation="self.v = self._inputs[0].v + self._inputs[1].v")
+        x._compute()
+        self._outputs.append(x)
+        return x
+
+    def __radd__(self, other):
+        return self.__add__(other)

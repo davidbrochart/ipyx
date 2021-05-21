@@ -1,5 +1,5 @@
 
-# ipyx
+# ipyx, where `x` is anything
 
 [![Build Status](https://travis-ci.org/davidbrochart/ipyx.svg?branch=master)](https://travis-ci.org/davidbrochart/ipyx)
 [![codecov](https://codecov.io/gh/davidbrochart/ipyx/branch/master/graph/badge.svg)](https://codecov.io/gh/davidbrochart/ipyx)

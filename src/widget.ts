@@ -22,7 +22,7 @@ export class XModel extends DOMWidgetModel {
       _view_name: XModel.view_name,
       _view_module: XModel.view_module,
       _view_module_version: XModel.view_module_version,
-      value: 'Hello World',
+      _value: 'None',
     };
   }
 
@@ -44,10 +44,10 @@ export class XView extends DOMWidgetView {
     this.el.classList.add('custom-widget');
 
     this.value_changed();
-    this.model.on('change:value', this.value_changed, this);
+    this.model.on('change:_value', this.value_changed, this);
   }
 
   value_changed() {
-    this.el.textContent = this.model.get('value');
+    this.el.textContent = this.model.get('_value');
   }
 }

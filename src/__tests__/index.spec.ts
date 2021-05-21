@@ -17,7 +17,7 @@ describe('X', () => {
     });
 
     it('should be createable with a value', () => {
-      const state = { value: 'Foo Bar!' };
+      const state = { _value: 'Foo Bar!' };
       const model = createTestModel(XModel, state);
       expect(model).toBeInstanceOf(XModel);
       expect(model.get('_value')).toEqual('Foo Bar!');
