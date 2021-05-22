@@ -1,6 +1,6 @@
 {
   "name": "ipyx",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A Jupyter widget library for reactive variables",
   "keywords": [
     "jupyter",
