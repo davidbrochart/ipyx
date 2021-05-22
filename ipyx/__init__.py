@@ -5,6 +5,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 from .x import X  # noqa
+from .f import F  # noqa
 from ._version import __version__, version_info  # noqa
 
 

@@ -8,7 +8,7 @@
 TODO: Add module docstring
 """
 
-from typing import Any, List, Callable
+from typing import Any, List, Callable, Optional
 
 from ipywidgets import DOMWidget  # type: ignore
 from traitlets import Unicode  # type: ignore
@@ -25,7 +25,8 @@ def register(func: Callable):
     def wrapper(self: "X", inputs: List["X"]) -> "X":
         x = func(self, inputs)
         x._compute()
-        self._outputs.append(x)
+        for i in inputs:
+            i._outputs.append(x)
         return x
 
     return wrapper
@@ -44,11 +45,17 @@ class X(DOMWidget):
     _value = Unicode("None").tag(sync=True)
 
     def __init__(
-        self, value: Any = None, inputs: List["X"] = [], operation: str = "", **kwargs
+        self,
+        value: Any = None,
+        _inputs: List["X"] = [],
+        _operation: str = "",
+        _function: Optional[Callable] = None,
+        **kwargs,
     ):
         self._outputs: List[X] = []
-        self._inputs = inputs
-        self._operation = operation
+        self._inputs = _inputs
+        self._operation = _operation
+        self._function = _function
         self.v = value
         super(X, self).__init__(**kwargs)
 
@@ -75,7 +82,7 @@ def make_unary(name: str, sign: str = ""):
             expression = f"{sign}self._inputs[0].v"
         else:
             expression = f"{name}(self._inputs[0].v)"
-        return X(inputs=inputs, operation=f"self.v = {expression}")
+        return X(_inputs=inputs, _operation=f"self.v = {expression}")
 
     def normal(self) -> "X":
         return operation(self, [self])
@@ -90,7 +97,7 @@ def make_binary(name: str, sign: str = ""):
             expression = f"self._inputs[0].v {sign} self._inputs[1].v"
         else:
             expression = f"{name}(self._inputs[0].v, self._inputs[1].v)"
-        return X(inputs=inputs, operation=f"self.v = {expression}")
+        return X(_inputs=inputs, _operation=f"self.v = {expression}")
 
     def normal(self, other: Any) -> "X":
         return operation(self, [self, make_x(other)])
