@@ -41,13 +41,14 @@ export class XModel extends DOMWidgetModel {
 
 export class XView extends DOMWidgetView {
   render() {
-    this.el.classList.add('custom-widget');
-
     this.value_changed();
     this.model.on('change:_value', this.value_changed, this);
   }
 
   value_changed() {
+    this.el.classList.remove('backgroundAnimated');
+    this.el.offsetHeight; // trigger reflow
+    this.el.classList.add('backgroundAnimated');
     this.el.textContent = this.model.get('_value');
   }
 }

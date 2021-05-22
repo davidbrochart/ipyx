@@ -1,4 +1,14 @@
-.custom-widget {
-  background-color: lightseagreen;
-  padding: 0px 2px;
+@-o-keyframes fadeIt {
+  0%   { background-color: #808080; }
+  100% { background: var(--jp-layout-color1); }
+}
+@keyframes fadeIt {
+  0%   { background-color: #808080; }
+  100% { background: var(--jp-layout-color1); }
+}
+
+.backgroundAnimated{
+    background-image:none !important;
+         -o-animation: fadeIt 0.5s ease-in-out;
+            animation: fadeIt 0.5s ease-in-out;
 }
