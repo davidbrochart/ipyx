@@ -72,7 +72,10 @@ class X(DOMWidget):
 
     def _compute(self) -> None:
         if self._operation:
-            exec(self._operation)
+            try:
+                exec(self._operation)
+            except Exception:
+                pass
 
 
 def make_unary(name: str, sign: str = ""):
