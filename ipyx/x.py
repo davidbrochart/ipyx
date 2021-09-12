@@ -8,7 +8,7 @@
 TODO: Add module docstring
 """
 
-from typing import Any, List, Callable, Optional
+from typing import Any, List, Dict, Callable, Optional
 
 from ipywidgets import DOMWidget  # type: ignore
 from traitlets import Unicode  # type: ignore
@@ -16,7 +16,7 @@ from ._frontend import module_name, module_version
 
 
 def make_x(v: Any) -> "X":
-    if type(v) is X:
+    if isinstance(v, X):
         return v
     return X(v)
 
@@ -48,12 +48,14 @@ class X(DOMWidget):
         self,
         value: Any = None,
         _inputs: List["X"] = [],
+        _kwinputs: Dict[str, "X"] = {},
         _operation: str = "",
         _function: Optional[Callable] = None,
         **kwargs,
     ):
         self._outputs: List[X] = []
         self._inputs = _inputs
+        self._kwinputs = _kwinputs
         self._operation = _operation
         self._function = _function
         self.v = value
@@ -76,6 +78,9 @@ class X(DOMWidget):
                 exec(self._operation)
             except Exception:
                 pass
+
+    def __repr__(self):
+        return str(self._v)
 
 
 def make_unary(name: str, sign: str = ""):
