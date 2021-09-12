@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.org/davidbrochart/ipyx.svg?branch=master)](https://travis-ci.org/davidbrochart/ipyx)
 [![codecov](https://codecov.io/gh/davidbrochart/ipyx/branch/master/graph/badge.svg)](https://codecov.io/gh/davidbrochart/ipyx)
-
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/davidbrochart/ipyx/HEAD?urlpath=lab%2Ftree%2Fexamples%2Fintroduction.ipynb)
 
 A Jupyter widget library for reactive variables
 
