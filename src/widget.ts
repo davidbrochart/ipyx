@@ -23,6 +23,7 @@ export class XModel extends DOMWidgetModel {
       _view_module: XModel.view_module,
       _view_module_version: XModel.view_module_version,
       _value: 'None',
+      _computing: false,
     };
   }
 
@@ -43,12 +44,21 @@ export class XView extends DOMWidgetView {
   render() {
     this.value_changed();
     this.model.on('change:_value', this.value_changed, this);
+    this.model.on('change:_computing', this.computing_changed, this);
   }
 
   value_changed() {
-    this.el.classList.remove('backgroundAnimated');
+    this.el.classList.remove('backgroundFlash');
+    this.el.classList.remove('backgroundFlashing');
     this.el.offsetHeight; // trigger reflow
-    this.el.classList.add('backgroundAnimated');
+    this.el.classList.add('backgroundFlash');
     this.el.textContent = this.model.get('_value');
+  }
+
+  computing_changed() {
+    this.el.classList.remove('backgroundFlash');
+    this.el.classList.remove('backgroundFlashing');
+    this.el.offsetHeight; // trigger reflow
+    this.el.classList.add('backgroundFlashing');
   }
 }
