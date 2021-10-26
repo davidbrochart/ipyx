@@ -11,7 +11,7 @@ TODO: Add module docstring
 from typing import Any, List, Dict, Callable, Optional
 
 from ipywidgets import DOMWidget  # type: ignore
-from traitlets import Unicode  # type: ignore
+from traitlets import Unicode, Bool  # type: ignore
 from ._frontend import module_name, module_version
 
 
@@ -43,6 +43,7 @@ class X(DOMWidget):
     _view_module_version = Unicode(module_version).tag(sync=True)
 
     _value = Unicode("None").tag(sync=True)
+    _computing = Bool(False).tag(sync=True)
 
     def __init__(
         self,
@@ -70,6 +71,8 @@ class X(DOMWidget):
         self._v = value
         self._value = str(value)
         for x in self._outputs:
+            x._toggle_computing()
+        for x in self._outputs:
             x._compute()
 
     def _compute(self) -> None:
@@ -78,6 +81,11 @@ class X(DOMWidget):
                 exec(self._operation)
             except Exception:
                 pass
+
+    def _toggle_computing(self) -> None:
+        self._computing = not self._computing
+        for x in self._outputs:
+            x._toggle_computing()
 
     def __repr__(self):
         return str(self._v)

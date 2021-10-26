@@ -1,14 +1,30 @@
-@-o-keyframes fadeIt {
+@-o-keyframes fadeOut {
   0%   { background-color: #808080; }
   100% { background: var(--jp-layout-color1); }
 }
-@keyframes fadeIt {
+@keyframes fadeOut {
   0%   { background-color: #808080; }
   100% { background: var(--jp-layout-color1); }
 }
 
-.backgroundAnimated{
-    background-image:none !important;
-         -o-animation: fadeIt 0.5s ease-in-out;
-            animation: fadeIt 0.5s ease-in-out;
+@-o-keyframes fadeIn {
+  0%   { background: var(--jp-layout-color1); }
+  100% { background-color: #808080; }
 }
+@keyframes fadeIn {
+  0%   { background: var(--jp-layout-color1); }
+  100% { background-color: #808080; }
+}
+
+.backgroundFlash{
+    background-image:none !important;
+         -o-animation: fadeOut 0.5s ease-in-out;
+            animation: fadeOut 0.5s ease-in-out;
+}
+
+.backgroundFlashing{
+    background-image:none !important;
+         -o-animation: fadeIn 0.5s infinite alternate;
+            animation: fadeIn 0.5s infinite alternate;
+}
+
