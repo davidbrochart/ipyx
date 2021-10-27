@@ -68,10 +68,11 @@ class X(DOMWidget):
 
     @v.setter
     def v(self, value: Any) -> None:
-        self._v = value
-        self._value = str(value)
         for x in self._outputs:
-            x._toggle_computing()
+            x._set_computing()
+        self._v = value
+        self._computing = False
+        self._value = str(value)
         for x in self._outputs:
             x._compute()
 
@@ -82,10 +83,11 @@ class X(DOMWidget):
             except Exception:
                 pass
 
-    def _toggle_computing(self) -> None:
-        self._computing = not self._computing
-        for x in self._outputs:
-            x._toggle_computing()
+    def _set_computing(self) -> None:
+        if not self._computing:
+            self._computing = True
+            for x in self._outputs:
+                x._set_computing()
 
     def __repr__(self):
         return str(self._v)

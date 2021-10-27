@@ -49,16 +49,19 @@ export class XView extends DOMWidgetView {
 
   value_changed() {
     this.el.classList.remove('backgroundFlash');
-    this.el.classList.remove('backgroundFlashing');
     this.el.offsetHeight; // trigger reflow
     this.el.classList.add('backgroundFlash');
     this.el.textContent = this.model.get('_value');
   }
 
   computing_changed() {
-    this.el.classList.remove('backgroundFlash');
-    this.el.classList.remove('backgroundFlashing');
-    this.el.offsetHeight; // trigger reflow
-    this.el.classList.add('backgroundFlashing');
+    if (this.model.get('_computing')) {
+      this.el.classList.remove('backgroundFlashing');
+      this.el.offsetHeight; // trigger reflow
+      this.el.classList.add('backgroundFlashing');
+    } else {
+      this.el.classList.remove('backgroundFlashing');
+      this.el.offsetHeight; // trigger reflow
+    }
   }
 }
