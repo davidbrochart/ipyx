@@ -13,11 +13,13 @@ class F:
             "**{k: i.v for k, i in self._kwinputs.items()})"
         )
         x = X(
-            _inputs=inputs, _kwinputs=kwinputs, _operation=operation, _function=self.f
+            _inputs=inputs,
+            _kwinputs=kwinputs,
+            _operation=operation,
+            _function=self.f,
+            _fname=self.f.__name__,
         )
         x._compute()
-        for i in inputs:
-            i._outputs.append(x)
-        for i in kwinputs.values():
+        for i in inputs + list(kwinputs.values()):
             i._outputs.append(x)
         return x
