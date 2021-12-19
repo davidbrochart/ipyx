@@ -16,24 +16,7 @@ from traitlets import Unicode, Bool  # type: ignore
 from ._frontend import module_name, module_version
 
 
-def make_x(v: Any) -> "X":
-    if isinstance(v, X):
-        return v
-    return X(v)
-
-
-def register(func: Callable):
-    def wrapper(self: "X", inputs: List["X"]) -> "X":
-        x = func(self, inputs)
-        x._compute()
-        for i in inputs:
-            i._outputs.append(x)
-        return x
-
-    return wrapper
-
-
-class X(DOMWidget):
+class W(DOMWidget):
     """TODO: Add docstring here"""
 
     _model_name = Unicode("XModel").tag(sync=True)
@@ -46,6 +29,8 @@ class X(DOMWidget):
     _value = Unicode("None").tag(sync=True)
     _computing = Bool(False).tag(sync=True)
 
+
+class X:
     _i = 0
 
     @classmethod
@@ -71,10 +56,20 @@ class X(DOMWidget):
         self._operation = _operation
         self._function = _function
         self._fname = _fname
+        self._w: Optional[W] = None
+        self._computing = False
         self.v = v
         self.n = n
         self.i = self.new_id()
         super(X, self).__init__(**kwargs)
+
+    @property
+    def w(self) -> W:
+        if self._w is None:
+            self._w = W()
+            self._w._computing = self._computing
+            self._w._value = str(self._v)
+        return self._w
 
     @property
     def v(self) -> Any:
@@ -85,8 +80,10 @@ class X(DOMWidget):
         for x in self._outputs:
             x._set_computing()
         self._v = v
-        self._computing = False
-        self._value = str(v)
+        self.computing = False
+        if self._w is not None:
+            self._w._computing = False
+            self._w._value = str(v)
         for x in self._outputs:
             x._compute()
 
@@ -100,6 +97,8 @@ class X(DOMWidget):
     def _set_computing(self) -> None:
         if not self._computing:
             self._computing = True
+            if self._w is not None:
+                self._w._computing = True
             for x in self._outputs:
                 x._set_computing()
 
@@ -173,16 +172,33 @@ class X(DOMWidget):
             return graph
 
 
+def make_x(v: Any) -> X:
+    if isinstance(v, X):
+        return v
+    return X(v)
+
+
+def register(func: Callable):
+    def wrapper(self: X, inputs: List[X]) -> X:
+        x = func(self, inputs)
+        x._compute()
+        for i in inputs:
+            i._outputs.append(x)
+        return x
+
+    return wrapper
+
+
 def make_unary(name: str, sign: str = ""):
     @register
-    def operation(self, inputs: List["X"]) -> "X":
+    def operation(self, inputs: List[X]) -> X:
         if sign:
             expression = f"{sign}self._inputs[0].v"
         else:
             expression = f"{name}(self._inputs[0].v)"
         return X(_inputs=inputs, _operation=f"self.v = {expression}")
 
-    def normal(self) -> "X":
+    def normal(self) -> X:
         return operation(self, [self])
 
     setattr(X, f"__{name}__", normal)
@@ -190,7 +206,7 @@ def make_unary(name: str, sign: str = ""):
 
 def make_binary(name: str, sign: str = ""):
     @register
-    def operation(self, inputs: List["X"]) -> "X":
+    def operation(self, inputs: List[X]) -> X:
         if sign:
             expression = f"self._inputs[0].v {sign} self._inputs[1].v"
             fname = sign
@@ -199,10 +215,10 @@ def make_binary(name: str, sign: str = ""):
             fname = name
         return X(_inputs=inputs, _operation=f"self.v = {expression}", _fname=fname)
 
-    def normal(self, other: Any) -> "X":
+    def normal(self, other: Any) -> X:
         return operation(self, [self, make_x(other)])
 
-    def reflected(self, other: Any) -> "X":
+    def reflected(self, other: Any) -> X:
         return operation(self, [make_x(other), self])
 
     setattr(X, f"_{name}", operation)
