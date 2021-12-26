@@ -92,7 +92,7 @@ class X:
             try:
                 exec(self._operation)
             except Exception:
-                pass
+                self.v = None
 
     def _set_computing(self) -> None:
         if not self._computing:
